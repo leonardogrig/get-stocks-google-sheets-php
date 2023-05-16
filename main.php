@@ -1,6 +1,6 @@
 <?php
 
-function updateSardineData()
+function updateStockData()
 {
 
     require __DIR__ . '/vendor/autoload.php';
@@ -15,32 +15,20 @@ function updateSardineData()
 
     $spreadsheetId = '1K-5p6Q1T6vAtY0DNwymDZLKSVFTnSqz9mQ-eIGfwS74';
 
-    // Mostrar tudo na planilha
-
-    // $range = 'DATA'; // here we use the name of the Sheet to get all the rows
-    // $response = $service->spreadsheets_values->get($spreadsheetId, $range);
-    // $values = $response->getValues();
-
-    // $jsonString = json_encode($values, JSON_UNESCAPED_UNICODE);
-    // print($jsonString);
-
-
     echo "Today is " . date("l");
     echo "The time is " . date("h:i:sa");
-
-
 
     if (date("l") != "Sunday" && date("l") != "Saturday") {
         if (date("H") >= 8 && date("H") <= 19) {
             
             $totalArray = [];
-            // Fetch the rows
+           
             $range = 'TOP_PRICE_CHANGE';
             $response = $service->spreadsheets_values->get($spreadsheetId, $range);
             $rows = $response->getValues();
-            // Remove the first one that contains headers
+           
             $headers = array_shift($rows);
-            // Combine the headers with each following row
+           
             $array = [];
             foreach ($rows as $row) {
                 $array[] = array_combine($headers, $row);
@@ -48,13 +36,12 @@ function updateSardineData()
 
             $totalArray['top_price_change'] = $array;
 
-            // Fetch the rows
             $range = 'TOP_PL';
             $response = $service->spreadsheets_values->get($spreadsheetId, $range);
             $rows = $response->getValues();
-            // Remove the first one that contains headers
+        
             $headers = array_shift($rows);
-            // Combine the headers with each following row
+          
             $array = [];
             foreach ($rows as $row) {
                 $array[] = array_combine($headers, $row);
@@ -62,19 +49,16 @@ function updateSardineData()
 
             $totalArray['top_pl'] = $array;
 
-            // Fetch the rows
             $range = 'TOP_DY';
             $response = $service->spreadsheets_values->get($spreadsheetId, $range);
             $rows = $response->getValues();
-            // Remove the first one that contains headers
+           
             $headers = array_shift($rows);
-            // Combine the headers with each following row
+           
             $array = [];
             foreach ($rows as $row) {
                 $array[] = array_combine($headers, $row);
             }
-
-            
 
             $totalArray['top_dy'] = $array;
 
@@ -82,7 +66,7 @@ function updateSardineData()
 
             print($jsonString);
 
-            $path = 'data/sardine-data.json';
+            $path = 'data/stock-data.json';
 
             $fp = fopen($path, 'w');
             fwrite($fp, $jsonString);
@@ -94,10 +78,8 @@ function updateSardineData()
 
 while (true) {
     date_default_timezone_set('America/Sao_Paulo');
-    updateSardineData();
+    updateStockData();
     sleep(60*15);
 }
-
-// loop function every 5 seconds
 
 ?>
